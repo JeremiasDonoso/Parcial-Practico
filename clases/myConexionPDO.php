@@ -272,7 +272,8 @@ public function insertSeguro($tb_name, $data)
 				i.correo,
 				i.celular,
 				GROUP_CONCAT(a.nombre SEPARATOR ', ') AS temas,
-				i.observaciones
+				i.observaciones,
+				i.firma
 			FROM inscriptores i
 			INNER JOIN paises pr ON i.pais_residencia_id=pr.id
 			INNER JOIN paises pn ON i.nacionalidad_id=pn.id
@@ -282,6 +283,40 @@ public function insertSeguro($tb_name, $data)
 			ORDER BY i.id DESC";
 
 		return $this->Arreglos($sql);
+	}
+
+	public function verificarFirma($registro)
+	{
+		$cadena =
+			$registro["nombre"] .
+			$registro["documento"] .
+			$registro["correo"] .
+			$registro["celular"] .
+			$registro["sexo"];
+
+		$publicKey = openssl_pkey_get_public(
+		file_get_contents(__DIR__ . "/../public.pem")
+		);
+
+		$ok = openssl_verify(
+			$cadena,
+			base64_decode($registro["firma"]),
+			$publicKey,
+			OPENSSL_ALGO_SHA256
+		);
+
+		return $ok === 1;
+	}
+
+	public function existeDocumento($documento)
+	{
+		$sql = "SELECT COUNT(*) FROM inscriptores WHERE documento = :documento";
+
+		$stmt = $this->conexion->prepare($sql);
+		$stmt->bindValue(":documento", $documento);
+		$stmt->execute();
+
+		return $stmt->fetchColumn() > 0;
 	}
 	
 }

@@ -31,6 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores[] = "El documento no tiene un formato válido.";
     }
 
+    if ($sql->existeDocumento($_POST["documento"])) {
+        $errores[] = "Ya existe un inscriptor con ese documento.";
+    }
+
     if (!Validation::correo($_POST["correo"])) {
         $errores[] = "El correo electrónico no es válido.";
     }
@@ -78,6 +82,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         exit;
     }
+
+    $cadena =
+    $_POST["nombre"] .
+    $_POST["documento"] .
+    $_POST["correo"] .
+    $_POST["celular"] .
+    $_POST["sexo"];
+
+    $privateKey = openssl_pkey_get_private(
+        file_get_contents(__DIR__ . "/private.pem")
+    );
+
+    openssl_sign($cadena, $firma, $privateKey, OPENSSL_ALGO_SHA256);
+
+    $_POST["firma"] = base64_encode($firma);
 
     // Guardar
     if ($sql->guardarInscripcion($_POST)) {

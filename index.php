@@ -271,7 +271,7 @@ $areas = $sql->obtenerAreasInteres();
 
                     </div>
 
-                    <div class="d-grid">
+                    <div class="d-grid gap-2">
 
                         <button
                             type="submit"
@@ -280,6 +280,14 @@ $areas = $sql->obtenerAreasInteres();
                             Guardar Inscriptor
 
                         </button>
+
+                        <a
+                            href="reporte.php"
+                            class="btn btn-primary btn-lg">
+
+                            Ver Reporte
+
+                        </a>
 
                     </div>
 

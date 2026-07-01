@@ -4,9 +4,15 @@ class Sanitizer
 {
     public static function texto($texto)
     {
-        $texto = trim($texto);
         $texto = strip_tags($texto);
-        $texto = htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
+
+        // Solo letras, espacios y tildes
+        $texto = preg_replace('/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü ]/', '', $texto);
+
+        // Quitar espacios repetidos
+        $texto = preg_replace('/\s+/', ' ', $texto);
+        
+        $texto = trim($texto);
 
         return mb_convert_case($texto, MB_CASE_TITLE, "UTF-8");
     }

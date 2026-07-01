@@ -46,6 +46,7 @@ $datos = $sql->obtenerReporte();
 <th>Correo</th>
 <th>Celular</th>
 <th>Temas</th>
+<th>Integridad</th>
 
 </tr>
 
@@ -68,6 +69,19 @@ $datos = $sql->obtenerReporte();
 <td><?= $d["correo"] ?></td>
 <td><?= $d["celular"] ?></td>
 <td><?= $d["temas"] ?></td>
+<td>
+
+<?php if($sql->verificarFirma($d)){ ?>
+
+<span class="badge bg-success">✔ Íntegro</span>
+
+<?php }else{ ?>
+
+<span class="badge bg-danger">✘ Alterado</span>
+
+<?php } ?>
+
+</td>
 
 </tr>
 
@@ -76,10 +90,6 @@ $datos = $sql->obtenerReporte();
 </tbody>
 
 </table>
-
-<a href="exportarExcel.php" class="btn btn-success">
-    Exportar a Excel
-</a>
 
 </body>
 
